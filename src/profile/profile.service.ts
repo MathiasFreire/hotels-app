@@ -4,6 +4,8 @@ import {InjectModel} from "@nestjs/sequelize";
 import {Profile} from "./profile.model";
 import {RolesService} from "../roles/roles.service";
 import {AddRoleDto} from "./dto/add-role.dto";
+import {Role} from "../roles/roles.model";
+import {RequestProfileDto} from "../content/dto/request-object.dto";
 
 @Injectable()
 export class ProfileService {
@@ -12,10 +14,14 @@ export class ProfileService {
                 private roleService: RolesService) {}
     async createProfile(dto: CreateProfileDto) {
         const profile = await this.profileRepository.create(dto);
-        let role = await this.roleService.getRoleByValue('user');
-        if (!role) {
-            await this.roleService.createRole({value: 'user', description: 'пользователь'})
+        let role: Role;
+        try {
+            role = await this.roleService.getRoleByValue('user');
+        } catch (e) {
+            await this.roleService.createRole({value: 'user', description: 'пользователь'});
+            throw new HttpException('Пожалуйста, повторите попытку', HttpStatus.INTERNAL_SERVER_ERROR)
         }
+
         await profile.$set('roles', [role.id]);
         await profile.save();
         profile.roles = [role];
@@ -44,39 +50,39 @@ export class ProfileService {
         return await Profile.destroy({where: {id: id}});
     }
 
-    async updateProfileFullName(id: number, value: string) {
+    async updateProfileFullName(dto: RequestProfileDto) {
         try {
-            const profile = await this.getProfileById(id);
-            return await profile.$set('fullName', [value]);
+            const profile = await this.getProfileById(dto.id);
+            return await profile.set('fullName', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства FullName у профиля с id = ${id}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства FullName у профиля с id = ${dto.id}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateProfilePhoneNumber(id: number, value: string) {
+    async updateProfilePhoneNumber(dto: RequestProfileDto) {
         try {
-            const profile = await this.getProfileById(id);
-            return await profile.$set('phoneNumber', [value]);
+            const profile = await this.getProfileById(dto.id);
+            return await profile.set('phoneNumber', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства phoneNumber у профиля с id = ${id}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства phoneNumber у профиля с id = ${dto.id}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateProfileEmail(id: number, value: string) {
+    async updateProfileEmail(dto: RequestProfileDto) {
         try {
-            const profile = await this.getProfileById(id);
-            return await profile.$set('email', [value]);
+            const profile = await this.getProfileById(dto.id);
+            return await profile.set('email', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства email у профиля с id = ${id}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства email у профиля с id = ${dto.id}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateProfileBirthDate(id: number, value: string) {
+    async updateProfileBirthDate(dto: RequestProfileDto) {
         try {
-            const profile = await this.getProfileById(id);
-            return await profile.$set('birthDate', [value]);
+            const profile = await this.getProfileById(dto.id);
+            return await profile.set('birthDate', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства birthDate у профиля с id = ${id}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства birthDate у профиля с id = ${dto.id}`, HttpStatus.BAD_REQUEST);
         }
     }
 }

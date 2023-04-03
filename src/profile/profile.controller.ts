@@ -4,6 +4,7 @@ import {RolesGuard} from "../auth/roles.guard";
 import {AddRoleDto} from "./dto/add-role.dto";
 import {ProfileService} from "./profile.service";
 import {CreateProfileDto} from "./dto/create-profile.dto";
+import {RequestObjectDto, RequestProfileDto} from "../content/dto/request-object.dto";
 
 @Controller('profile')
 export class ProfileController {
@@ -47,28 +48,28 @@ export class ProfileController {
     @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/name')
-    updateName(@Body() id: number, fullName: string) {
-        return this.profileService.updateProfileFullName(id, fullName);
+    updateName(@Body() dto: RequestProfileDto) {
+        return this.profileService.updateProfileFullName(dto);
     }
 
     @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/phone')
-    updatePhone(@Body() id: number, phone: string) {
-        return this.profileService.updateProfilePhoneNumber(id, phone);
+    updatePhone(@Body() dto: RequestProfileDto) {
+        return this.profileService.updateProfilePhoneNumber(dto);
     }
 
     @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/email')
-    updateEmail(@Body() id: number, email: string) {
-        return this.profileService.updateProfileEmail(id, email)
+    updateEmail(@Body() dto: RequestProfileDto) {
+        return this.profileService.updateProfileEmail(dto)
     }
 
     @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/birthdate')
-    updateBirthDate(@Body() id: number, birthDate: string) {
-        return this.profileService.updateProfileBirthDate(id, birthDate);
+    updateBirthDate(@Body() dto: RequestProfileDto) {
+        return this.profileService.updateProfileBirthDate(dto);
     }
 }

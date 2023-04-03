@@ -3,6 +3,7 @@ import {CreateContentDto} from "./dto/create-content.dto";
 import {InjectModel} from "@nestjs/sequelize";
 import {Content} from "./content.model";
 import {FilesService} from "../files/files.service";
+import {RequestImageDto, RequestObjectDto} from "./dto/request-object.dto";
 
 @Injectable()
 export class ContentService {
@@ -37,64 +38,59 @@ export class ContentService {
         return await Content.destroy({where: {searchTag: searchTag}})
     }
 
-    async updateContentSearchTag(searchTag: string, value: string) {
+    async updateContentSearchTag(dto: RequestObjectDto) {
         try {
-            const content = await this.getContentBySearchTag(searchTag);
+            const content = await this.getContentBySearchTag(dto.tag);
 
-            return await content.$set('searchTag', [value]);
+            return await content.set('searchTag', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства searchTag у текстового модуля с тэгом = ${searchTag}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства searchTag у текстового модуля с тэгом = ${dto.tag}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateContentTitle(searchTag: string, value: string) {
+    async updateContentTitle(dto: RequestObjectDto) {
         try {
-            const content = await this.getContentBySearchTag(searchTag);
+            const content = await this.getContentBySearchTag(dto.tag);
 
-            await content.$set('title', value);
-            await content.save();
-            return content;
+            return await content.set('title', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства title у текстового модуля с тэгом = ${searchTag}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства title у текстового модуля с тэгом = ${dto.tag}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateContentText(searchTag: string, value: string) {
+    async updateContentText(dto: RequestObjectDto) {
         try {
-            const content = await this.getContentBySearchTag(searchTag);
+            const content = await this.getContentBySearchTag(dto.tag);
 
-            await content.$set('text', [value]);
-            await content.save();
-
-            return content;
+            return await content.set('text', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства text у текстового модуля с тэгом = ${searchTag}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства text у текстового модуля с тэгом = ${dto.tag}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateContentGroup(searchTag: string, value: string) {
+    async updateContentGroup(dto: RequestObjectDto) {
         try {
-            const content = await this.getContentBySearchTag(searchTag);
+            const content = await this.getContentBySearchTag(dto.tag);
 
-            return await content.$set('group', [value]);
+            return await content.set('group', dto.value);
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства group у текстового модуля с тэгом = ${searchTag}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства group у текстового модуля с тэгом = ${dto.tag}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateContentImage(searchTag: string, value: any) {
+    async updateContentImage(dto: RequestImageDto) {
         try {
-            const content = await this.getContentBySearchTag(searchTag);
+            const content = await this.getContentBySearchTag(dto.tag);
 
             const oldFileName = content.image;
             await this.fileService.destroyEssenceTableAndId(oldFileName);
 
-            const fileName = await this.fileService.createFile(value);
+            const fileName = await this.fileService.createFile(dto.value);
             await this.fileService.setEssenceTableAndId(fileName, content.id);
 
             return content;
         } catch (e) {
-            throw new HttpException(`Ошибка при изменении свойства image у текстового модуля с тэгом = ${searchTag}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Ошибка при изменении свойства image у текстового модуля с тэгом = ${dto.tag}`, HttpStatus.BAD_REQUEST);
         }
     }
 }

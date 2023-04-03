@@ -2,7 +2,7 @@ import {Body, Controller, Get, Param, Post, UploadedFile, UseGuards, UseIntercep
 import {ContentService} from "./content.service";
 import {CreateContentDto} from "./dto/create-content.dto";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {RequestObjectDto} from "./dto/request-object.dto";
+import {RequestImageDto, RequestObjectDto} from "./dto/request-object.dto";
 import {Roles} from "../auth/roles-auth.decorator";
 import {RolesGuard} from "../auth/roles.guard";
 
@@ -44,35 +44,35 @@ export class ContentController {
     @Roles('admin')
     @UseGuards(RolesGuard)
     @Post('/updateTag')
-    updateSearchTag(@Body() tag: string, value: string) {
-        return this.contentService.updateContentSearchTag(tag, value);
+    updateSearchTag(@Body() dto: RequestObjectDto) {
+        return this.contentService.updateContentSearchTag(dto);
     }
 
     @Roles('admin')
     @UseGuards(RolesGuard)
     @Post('/updateTitle')
     updateTitle(@Body() dto: RequestObjectDto) {
-        return this.contentService.updateContentTitle(dto.tag, dto.value);
+        return this.contentService.updateContentTitle(dto);
     }
 
     @Roles('admin')
     @UseGuards(RolesGuard)
     @Post('/updateText')
-    updateText(@Body() tag: string, value: string) {
-        return this.contentService.updateContentText(tag, value);
+    updateText(@Body() dto: RequestObjectDto) {
+        return this.contentService.updateContentText(dto);
     }
 
     @Roles('admin')
     @UseGuards(RolesGuard)
     @Post('/updateGroup')
-    updateGroup(@Body() tag: string, value: string) {
-        return this.contentService.updateContentGroup(tag, value);
+    updateGroup(@Body() dto: RequestObjectDto) {
+        return this.contentService.updateContentGroup(dto);
     }
 
     @Roles('admin')
     @UseGuards(RolesGuard)
     @Post('/updateImage')
-    updateImage(@Body() tag: string, value: any) {
-        return this.contentService.updateContentImage(tag, value);
+    updateImage(@Body() dto: RequestImageDto) {
+        return this.contentService.updateContentImage(dto);
     }
 }
