@@ -7,16 +7,16 @@ import {
     UnauthorizedException
 } from "@nestjs/common";
 import {JwtService} from "@nestjs/jwt";
-import {Observable} from "rxjs";
 import {Reflector} from "@nestjs/core";
 import {ROLES_KEY} from "./roles-auth.decorator";
+import {Profile} from "../profile/profile.model";
 
 @Injectable()
 export class RolesGuard implements CanActivate{
 
     constructor(private jwtService: JwtService,
                 private reflector: Reflector) {}
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         try {
             const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
                 context.getHandler(),
@@ -36,8 +36,11 @@ export class RolesGuard implements CanActivate{
                 throw new UnauthorizedException({message: 'Пользователь не авторизован'});
             }
 
-            const profile = this.jwtService.verify(token); // раскодировка токена
+            const user = this.jwtService.verify(token); // раскодировка токена
+            const profile: Profile = await Profile.findOne({where: {userId: user.id}, include: {all: true}});
+
             req.profile = profile;
+
             // проверка наличия у пользователя необходимых прав
             return profile.roles.some(role => requiredRoles.includes(role.value));
         } catch (e) {

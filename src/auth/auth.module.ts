@@ -7,6 +7,9 @@ import * as process from "process";
 import {ProfileModule} from "../profile/profile.module";
 import {RolesModule} from "../roles/roles.module";
 import {FilesModule} from "../files/files.module";
+import {SequelizeModule} from "@nestjs/sequelize";
+import {Profile} from "../profile/profile.model";
+import {User} from "../users/users.model";
 
 @Module({
   providers: [AuthService],

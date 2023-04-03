@@ -16,56 +16,56 @@ export class ProfileController {
         return this.profileService.createProfile(profileDto);
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Get('/profiles/:id')
     getById(@Param('id') id: number) {
         return this.profileService.getProfileById(id);
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Get('/profiles')
     getAll() {
         return this.profileService.getAllProfiles();
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/role')
     addRole(@Body() dto: AddRoleDto) {
         return this.profileService.addRole(dto);
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/delete')
     delete(@Body() id: number) {
         return this.profileService.deleteProfile(id);
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/name')
     updateName(@Body() id: number, fullName: string) {
         return this.profileService.updateProfileFullName(id, fullName);
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/phone')
     updatePhone(@Body() id: number, phone: string) {
         return this.profileService.updateProfilePhoneNumber(id, phone);
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/email')
     updateEmail(@Body() id: number, email: string) {
         return this.profileService.updateProfileEmail(id, email)
     }
 
-    @Roles('admin')
+    @Roles('admin', 'developer')
     @UseGuards(RolesGuard)
     @Post('/birthdate')
     updateBirthDate(@Body() id: number, birthDate: string) {
